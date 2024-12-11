@@ -6,6 +6,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import hajong.qrcode.presentation.history.HistoryScreen
+import hajong.qrcode.presentation.main.MainScreen
+import hajong.qrcode.presentation.result.ResultScreen
 
 sealed class Screen(val route: String) {
     data object Main : Screen("main")

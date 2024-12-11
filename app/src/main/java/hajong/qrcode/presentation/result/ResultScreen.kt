@@ -27,6 +27,14 @@ fun ResultScreen(
             )
         }
     ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
+        ) {
+            Text(
+                text = "RESULT"
+            )
+        }
 //        AndroidView(
 //            modifier = Modifier
 //                .fillMaxSize()
