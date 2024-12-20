@@ -10,11 +10,16 @@ import com.google.zxing.DecodeHintType
 import com.google.zxing.MultiFormatReader
 import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.common.HybridBinarizer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
-class QrCodeAnalyzer(
-    private val onQrCodeScanned: (String) -> Unit
-): ImageAnalysis.Analyzer {
+class QrCodeAnalyzer: ImageAnalysis.Analyzer {
+    private val _scannedResult = MutableSharedFlow<String>()
+    val scannedResult = _scannedResult.asSharedFlow()
 
     private val supportedImageFormats = listOf(
         ImageFormat.YUV_420_888,
@@ -48,8 +53,10 @@ class QrCodeAnalyzer(
                             )
                         )
                     }.decode(binaryBmp)
-                    Log.d("[지용]", "qr result: ${result.text}")
-                    onQrCodeScanned(result.text)
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        _scannedResult.emit(result.text)
+                    }
 
                 } catch (e: Exception) {
                     e.printStackTrace()

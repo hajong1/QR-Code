@@ -2,6 +2,7 @@ package hajong.qrcode.presentation.main
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import hajong.qrcode.util.QrCodeAnalyzer
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun MainScreen(
@@ -57,9 +60,20 @@ fun MainScreen(
             hasCameraPermission = granted
         }
     )
+    val qrCodeAnalyzer = remember { QrCodeAnalyzer() }
 
     LaunchedEffect(key1 = true) {
         launcher.launch(Manifest.permission.CAMERA)
+    }
+
+    // Flow 수집
+    LaunchedEffect(key1 = qrCodeAnalyzer) {
+        qrCodeAnalyzer.scannedResult
+            .distinctUntilChanged() // 동일한 값 방지
+            .collect { result ->
+                code = result
+//                onScanResult(result) // 콜백 호출
+            }
     }
 
     Column(
@@ -86,9 +100,10 @@ fun MainScreen(
                         .build()
                     imageAnalysis.setAnalyzer(
                         ContextCompat.getMainExecutor(context),
-                        QrCodeAnalyzer { result ->
-                            code = result
-                        }
+                        qrCodeAnalyzer
+//                        QrCodeAnalyzer { result ->
+//                            code = result
+//                        }
                     )
                     try {
                         cameraProviderFuture.get().bindToLifecycle(
