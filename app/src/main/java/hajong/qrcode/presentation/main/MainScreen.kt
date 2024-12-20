@@ -13,6 +13,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -21,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -37,10 +39,6 @@ fun MainScreen(
     onHistoryClick: () -> Unit,
     onScanResult: (String) -> Unit
 ) {
-
-    var code by remember {
-        mutableStateOf("")
-    }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember {
@@ -60,13 +58,13 @@ fun MainScreen(
             hasCameraPermission = granted
         }
     )
+    var code by remember { mutableStateOf("") }
     val qrCodeAnalyzer = remember { QrCodeAnalyzer() }
 
     LaunchedEffect(key1 = true) {
         launcher.launch(Manifest.permission.CAMERA)
     }
 
-    // Flow 수집
     LaunchedEffect(key1 = qrCodeAnalyzer) {
         qrCodeAnalyzer.scannedResult
             .distinctUntilChanged() // 동일한 값 방지
@@ -79,46 +77,58 @@ fun MainScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // QR Scanner camera preview
-        if (hasCameraPermission) {
-            AndroidView(
-                factory = { context ->
-                    val previewView = PreviewView(context)
-                    val preview = Preview.Builder().build()
-                    val selector = CameraSelector.Builder()
-                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                        .build()
-                    preview.setSurfaceProvider(previewView.surfaceProvider)
-                    val imageAnalysis = ImageAnalysis.Builder()
-                        .setTargetResolution(
-                            Size(
-                                previewView.width,
-                                previewView.height
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            // QR Scanner camera preview
+            if (hasCameraPermission) {
+                AndroidView(
+                    factory = { context ->
+                        val previewView = PreviewView(context)
+                        val preview = Preview.Builder().build()
+                        val selector = CameraSelector.Builder()
+                            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                            .build()
+                        preview.setSurfaceProvider(previewView.surfaceProvider)
+                        val imageAnalysis = ImageAnalysis.Builder()
+                            .setTargetResolution(
+                                Size(
+                                    previewView.width,
+                                    previewView.height
+                                )
                             )
+                            .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+                            .build()
+                        imageAnalysis.setAnalyzer(
+                            ContextCompat.getMainExecutor(context),
+                            qrCodeAnalyzer
                         )
-                        .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-                        .build()
-                    imageAnalysis.setAnalyzer(
-                        ContextCompat.getMainExecutor(context),
-                        qrCodeAnalyzer
-//                        QrCodeAnalyzer { result ->
-//                            code = result
-//                        }
-                    )
-                    try {
-                        cameraProviderFuture.get().bindToLifecycle(
-                            lifecycleOwner,
-                            selector,
-                            preview,
-                            imageAnalysis
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    previewView
-                },
-                modifier = Modifier.weight(1f)
-            )
+                        try {
+                            cameraProviderFuture.get().bindToLifecycle(
+                                lifecycleOwner,
+                                selector,
+                                preview,
+                                imageAnalysis
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        previewView
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            // Animating Box
+            Column(
+                modifier = Modifier
+                    .size(100.dp)
+                    .border(3.dp, Color.Red),
+            ) {
+
+            }
+
+
         }
         Text(
             text = code,
