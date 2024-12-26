@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import hajong.qrcode.presentation.common.Aim
 import hajong.qrcode.util.QrCodeAnalyzer
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -120,13 +121,9 @@ fun MainScreen(
                 )
             }
             // Animating Box
-            Column(
-                modifier = Modifier
-                    .size(100.dp)
-                    .border(3.dp, Color.Red),
-            ) {
-
-            }
+            Aim(
+                modifier = Modifier.size(300.dp)
+            )
 
 
         }
