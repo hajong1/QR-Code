@@ -14,6 +14,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -62,6 +64,7 @@ fun MainScreen(
     var code by remember { mutableStateOf("") }
     val qrCodeAnalyzer = remember { QrCodeAnalyzer() }
 
+    val interactionSource = remember { MutableInteractionSource() }
     LaunchedEffect(key1 = true) {
         launcher.launch(Manifest.permission.CAMERA)
     }
@@ -80,7 +83,6 @@ fun MainScreen(
     ) {
         Box(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center
         ) {
             // QR Scanner camera preview
             if (hasCameraPermission) {
@@ -122,19 +124,42 @@ fun MainScreen(
             }
             // Animating Box
             Aim(
-                modifier = Modifier.size(300.dp)
+                modifier = Modifier.size(50.dp)
+                    .align(Alignment.Center)
             )
 
-
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .align(Alignment.BottomCenter),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = code,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(Color.Red)
+                )
+                Text(
+                    text = "Go History",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(Color.Gray)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = onHistoryClick,
+                        )
+                )
+            }
         }
-        Text(
-            text = code,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.dp)
-                .background(Color.Red)
-        )
     }
 }
