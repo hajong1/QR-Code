@@ -44,6 +44,7 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
     }
@@ -78,6 +79,13 @@ fun MainScreen(
             }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            cameraProvider?.unbindAll()
+            cameraProvider = null
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -108,12 +116,15 @@ fun MainScreen(
                             qrCodeAnalyzer
                         )
                         try {
-                            cameraProviderFuture.get().bindToLifecycle(
-                                lifecycleOwner,
-                                selector,
-                                preview,
-                                imageAnalysis
-                            )
+                            cameraProvider = cameraProviderFuture.get().also { provider ->
+                                provider.unbindAll()
+                                provider.bindToLifecycle(
+                                    lifecycleOwner,
+                                    selector,
+                                    preview,
+                                    imageAnalysis
+                                )
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
