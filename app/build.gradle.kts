@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.dagger.hilt.android)
 }
 
 android {
@@ -72,6 +73,10 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.video)
     implementation(libs.androidx.camera.ectensions)
+
+    // hilt
+    implementation(libs.dagger.hilt.android)
+    kapt(libs.dagger.hilt.android.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
