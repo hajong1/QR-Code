@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import hajong.qrcode.data.QrHistoryDao
+//import hajong.qrcode.data.QrHistoryDao
 import hajong.qrcode.data.repository.QrHistoryRepository
 import hajong.qrcode.data.repository.QrHistoryRepositoryImpl
 import javax.inject.Singleton

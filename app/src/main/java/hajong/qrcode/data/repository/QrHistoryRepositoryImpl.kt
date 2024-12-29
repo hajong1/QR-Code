@@ -7,30 +7,26 @@ import javax.inject.Inject
 
 class QrHistoryRepositoryImpl @Inject constructor(
     private val qrHistoryDao: QrHistoryDao
-) {
+) : QrHistoryRepository {
 //    val history = qrHistoryDao.getAll()
 
-//    override fun fetchHistory(page: Int) = flow {
-//        val pageSize = 10
-//        val offset = (page - 1) * pageSize
-//        val history = qrHistoryDao.getHistoryPage(pageSize, offset)
-//        emit(history)
-//
-//    }
+    override fun fetchHistory(page: Int) = flow {
+        val pageSize = 10
+        val offset = (page - 1) * pageSize
+        val history = qrHistoryDao.getHistoryPage(pageSize, offset)
+        emit(history)
 
-//    override fun fetchHistory(page: Int) = flow {
-//        var history = qrHistoryDao.getAll()
-//    }
-//
-//    override fun insertHistory(content: String) {
-//
-//    }
-//
-//    override fun deleteHistory(history: QrHistoryEntity) {
-//
-//    }
-//
-//    override fun deleteAllHistory() {
-//        qrHistoryDao.deleteAllHistory()
-//    }
+    }
+
+    override fun insertHistory(content: String) {
+
+    }
+
+    override fun deleteHistory(history: QrHistoryEntity) {
+
+    }
+
+    override fun deleteAllHistory() {
+
+    }
 }

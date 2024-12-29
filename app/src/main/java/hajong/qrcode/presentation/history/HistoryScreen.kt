@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -43,15 +44,36 @@ fun HistoryScreen(
                 Log.d("[지용]", "call loadMore")
             }
         ) {
-            repeat(50) {
-                item(
-                    key = it
+            items(
+                count = 10,
+                key = { it.id },
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "item : $it",
+                    Column() {
+                        Text(
+                            text = "content : $it",
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(bottom = 4.dp)
+                        )
+                        Text(
+                            text = "item : $it",
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(bottom = 4.dp)
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Delete",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, bottom = 16.dp)
+                            .align(Alignment.CenterVertically)
+                            .size(24.dp)
                     )
                 }
             }

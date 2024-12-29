@@ -8,5 +8,4 @@ interface QrHistoryRepository {
     fun insertHistory(content: String)
     fun deleteHistory(history: QrHistoryEntity)
     fun deleteAllHistory()
-
 }
