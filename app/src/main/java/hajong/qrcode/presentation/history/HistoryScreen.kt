@@ -46,7 +46,6 @@ fun HistoryScreen(
         ) {
             items(
                 count = 10,
-                key = { it.id },
             ) {
                 Row(
                     modifier = Modifier
