@@ -13,15 +13,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import hajong.qrcode.presentation.common.InfinityLazyColumn
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     onBackClick: () -> Unit,
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
+    viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val scrollState = rememberLazyListState()
+
+    val list = viewModel.historyList.collectAsState()
 
     Scaffold(
         topBar = {
@@ -45,7 +49,7 @@ fun HistoryScreen(
             }
         ) {
             items(
-                count = 10,
+                count = list.value.size,
             ) {
                 Row(
                     modifier = Modifier
@@ -55,13 +59,13 @@ fun HistoryScreen(
                 ) {
                     Column() {
                         Text(
-                            text = "content : $it",
+                            text = "content : ${list.value[it].content}",
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(bottom = 4.dp)
                         )
                         Text(
-                            text = "item : $it",
+                            text = "time : ${list.value[it].timestamp}",
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(bottom = 4.dp)
