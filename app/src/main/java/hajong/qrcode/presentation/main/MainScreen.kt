@@ -34,6 +34,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import hajong.qrcode.presentation.common.Aim
 import hajong.qrcode.util.QrCodeAnalyzer
+import hajong.qrcode.util.QrCodeResult
+import hajong.qrcode.util.parseQrResult
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -74,7 +76,20 @@ fun MainScreen(
         qrCodeAnalyzer.scannedResult
             .distinctUntilChanged() // 동일한 값 방지
             .collect { result ->
-                code = result
+
+                when (parseQrResult(result)) {
+                    is QrCodeResult.DeepLink -> {
+                        code = "DeepLink : ${result}"
+                    }
+                    is QrCodeResult.PlainText -> {
+                        code = "PlainText : ${result}"
+                    }
+                    is QrCodeResult.Url -> {
+                        code = "Url : ${result}"
+                    }
+                }
+
+
 //                onScanResult(result) // 콜백 호출
             }
     }

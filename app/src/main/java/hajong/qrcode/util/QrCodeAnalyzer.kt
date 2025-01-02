@@ -53,7 +53,7 @@ class QrCodeAnalyzer: ImageAnalysis.Analyzer {
                             )
                         )
                     }.decode(binaryBmp)
-
+                    // QrCodeResult 를 여기에 붙일지 고민
                     CoroutineScope(Dispatchers.Main).launch {
                         _scannedResult.emit(result.text)
                     }
