@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import hajong.qrcode.presentation.common.QrWebView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +32,9 @@ fun ResultScreen(
             modifier = Modifier
                 .padding(padding)
         ) {
-            Text(
-                text = "RESULT"
+            QrWebView(
+                code = url,
+                modifier = Modifier
             )
         }
 //        AndroidView(

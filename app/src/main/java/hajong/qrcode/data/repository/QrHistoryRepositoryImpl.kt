@@ -2,6 +2,7 @@ package hajong.qrcode.data.repository
 
 import hajong.qrcode.data.QrHistoryDao
 import hajong.qrcode.data.domain.QrHistory
+import hajong.qrcode.data.entity.QrHistoryEntity
 import hajong.qrcode.data.mapper.toDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -28,7 +29,12 @@ class QrHistoryRepositoryImpl @Inject constructor(
     }.onStart { onStart() }.onCompletion { onComplete() }.flowOn(Dispatchers.IO)
 
     override fun insertHistory(content: String) {
-
+        // 추가 해야함
+//        qrHistoryDao.insert(
+//            QrHistoryEntity(
+//                content = content
+//            )
+//        )
     }
 
     override fun deleteHistory(history: QrHistory) {

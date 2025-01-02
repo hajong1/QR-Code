@@ -1,14 +1,19 @@
 package hajong.qrcode.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import hajong.qrcode.presentation.history.HistoryScreen
 import hajong.qrcode.presentation.main.MainScreen
 import hajong.qrcode.presentation.result.ResultScreen
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 sealed class Screen(val route: String) {
     data object Main : Screen("main")
@@ -30,7 +35,14 @@ fun QRScannerNavGraph(navController: NavHostController) {
                     navController.navigate(Screen.History.route)
                 },
                 onScanResult = { url ->
-                    navController.navigate(Screen.Result.createRoute(url))
+                    navController.navigate(
+                        Screen.Result.createRoute(
+                            URLEncoder.encode(
+                                url,
+                                StandardCharsets.UTF_8.toString()
+                            )
+                        )
+                    )
                 }
             )
         }
@@ -56,7 +68,7 @@ fun QRScannerNavGraph(navController: NavHostController) {
         ) { backStackEntry ->
             val url = backStackEntry.arguments?.getString("url")
             ResultScreen(
-                url = url ?: "",
+                url = URLDecoder.decode(url, StandardCharsets.UTF_8.toString()) ?: "",
                 onBackClick = {
                     navController.popBackStack()
                 }

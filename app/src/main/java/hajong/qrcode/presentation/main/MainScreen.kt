@@ -79,13 +79,13 @@ fun MainScreen(
 
                 when (parseQrResult(result)) {
                     is QrCodeResult.DeepLink -> {
-                        code = "DeepLink : ${result}"
+                        code = result
                     }
                     is QrCodeResult.PlainText -> {
-                        code = "PlainText : ${result}"
+                        code = result
                     }
                     is QrCodeResult.Url -> {
-                        code = "Url : ${result}"
+                        code = result
                     }
                 }
 
@@ -170,6 +170,14 @@ fun MainScreen(
                         .fillMaxWidth()
                         .padding(10.dp)
                         .background(Color.Red)
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = {
+                                onScanResult(code)
+
+                            },
+                        )
                 )
                 Text(
                     text = "Go History",

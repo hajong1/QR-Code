@@ -36,12 +36,12 @@ fun QrWebView(
 //                        isLoading = false
                     }
 
-                    override fun shouldOverrideUrlLoading(
-                        view: WebView?,
-                        request: WebResourceRequest?
-                    ): Boolean {
-                        return shouldOverrideUrlLoading(view, request)
-                    }
+//                    override fun shouldOverrideUrlLoading(
+//                        view: WebView?,
+//                        request: WebResourceRequest?
+//                    ): Boolean {
+//                        return shouldOverrideUrlLoading(view, request!!.url.toString())
+//                    }
                 }
             }
         },
