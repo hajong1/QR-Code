@@ -53,30 +53,14 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-//    private fun loadHistories() {
-//        if (_uiState.value.isLoading) return
-//
-//        viewModelScope.launch {
-//            _uiState.update { it.copy(isLoading = true) }
-//
-//            repository.fetchHistory(_uiState.value.currentPage, pageSize)
-//                .catch { e ->
-//                    _uiState.update {
-//                        it.copy(
-//                            isLoading = false,
-//                            errorMessage = e.message
-//                        )
-//                    }
-//                }
-//                .collect { histories ->
-//                    _uiState.update {
-//                        it.copy(
-//                            histories = if (it.currentPage == 1) histories else it.histories + histories,
-//                            isLoading = false,
-//                            hasNextPage = histories.isNotEmpty()
-//                        )
-//                    }
-//                }
-//        }
-//    }
+    fun deleteHistory(id: Long) {
+        viewModelScope.launch {
+            try {
+                repository.deleteHistory(id)
+                // 수정중
+            } catch (e: Exception) {
+
+            }
+        }
+    }
 }

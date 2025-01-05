@@ -19,10 +19,10 @@ interface QrHistoryDao {
     suspend fun getTotalCount(): Int
 //
     @Insert
-    suspend fun insert(history: QrHistoryEntity)
+    suspend fun insert(history: QrHistoryEntity): Long
 //
-    @Delete
-    suspend fun delete(history: QrHistoryEntity)
+    @Query("DELETE FROM qr_history WHERE id = :id")
+    suspend fun delete(id: Long)
 //
     @Query("DELETE FROM qr_history")
     suspend fun deleteAllHistory()

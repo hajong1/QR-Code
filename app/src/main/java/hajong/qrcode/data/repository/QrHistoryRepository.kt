@@ -11,7 +11,7 @@ interface QrHistoryRepository {
         onComplete: () -> Unit,
         onError: (String?) -> Unit
     ): Flow<List<QrHistory>>
-    suspend fun insertHistory(content: String)
-    fun deleteHistory(history: QrHistory)
+    suspend fun insertHistory(content: String): Long
+    suspend fun deleteHistory(id: Long)
     fun deleteAllHistory()
 }

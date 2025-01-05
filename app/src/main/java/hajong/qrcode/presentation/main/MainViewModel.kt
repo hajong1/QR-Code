@@ -21,14 +21,16 @@ class MainViewModel @Inject constructor(
     private val repository: QrHistoryRepository
 ) : ViewModel() {
 
-    fun addQrHistory(content :String) {
+    fun addQrHistory(content :String): Long? {
+        var insertedId: Long? = null
+
         viewModelScope.launch {
             try {
-                repository.insertHistory(content)
+                insertedId = repository.insertHistory(content)
             } catch (e: Exception) {
 
             }
         }
+        return insertedId
     }
-
 }

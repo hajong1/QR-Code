@@ -1,6 +1,8 @@
 package hajong.qrcode.presentation.history
 
 import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,6 +26,7 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val scrollState = rememberLazyListState()
+    val interactionSource = remember { MutableInteractionSource() }
 
     val list = viewModel.historyList.collectAsState()
 
@@ -59,6 +62,12 @@ fun HistoryScreen(
                 ) {
                     Column() {
                         Text(
+                            text = "id : ${list.value[it].id}",
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(bottom = 4.dp)
+                        )
+                        Text(
                             text = "content : ${list.value[it].content}",
                             modifier = Modifier
                                 .wrapContentSize()
@@ -77,6 +86,14 @@ fun HistoryScreen(
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .size(24.dp)
+                            .padding(4.dp)
+                            .clickable (
+                                interactionSource = interactionSource,
+                                indication = null,
+                                onClick = {
+                                    viewModel.deleteHistory(list.value[it].id)
+                                }
+                            )
                     )
                 }
             }

@@ -2,6 +2,7 @@ package hajong.qrcode.presentation.main
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -172,7 +173,9 @@ fun MainScreen(
                             indication = null,
                             onClick = {
                                 onScanResult(code)
-                                viewModel.addQrHistory(code)
+                                viewModel.addQrHistory(code).also {
+                                    Log.d("[지용]", "insertedId : $it")
+                                }
                             },
                         )
                 )
