@@ -80,20 +80,6 @@ fun HistoryScreen(
                     )
                 }
             }
-//            Column() {
-//
-//            }
-//            items(
-//                items = scanHistory,
-//                key = { it.id }
-//            ) {
-//                Text(
-//                    text = it.url,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(16.dp)
-//                )
-//            }
         }
     }
 }

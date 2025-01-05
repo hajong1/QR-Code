@@ -28,13 +28,13 @@ class QrHistoryRepositoryImpl @Inject constructor(
         emit(history)
     }.onStart { onStart() }.onCompletion { onComplete() }.flowOn(Dispatchers.IO)
 
-    override fun insertHistory(content: String) {
+    override suspend fun insertHistory(content: String) {
         // 추가 해야함
-//        qrHistoryDao.insert(
-//            QrHistoryEntity(
-//                content = content
-//            )
-//        )
+        qrHistoryDao.insert(
+            QrHistoryEntity(
+                content = content
+            )
+        )
     }
 
     override fun deleteHistory(history: QrHistory) {

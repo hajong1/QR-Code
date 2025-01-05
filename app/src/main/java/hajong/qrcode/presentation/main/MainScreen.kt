@@ -2,7 +2,6 @@ package hajong.qrcode.presentation.main
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.util.Log
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,18 +12,14 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -32,17 +27,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import hajong.qrcode.presentation.common.Aim
 import hajong.qrcode.util.QrCodeAnalyzer
 import hajong.qrcode.util.QrCodeResult
 import hajong.qrcode.util.parseQrResult
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun MainScreen(
     onHistoryClick: () -> Unit,
-    onScanResult: (String) -> Unit
+    onScanResult: (String) -> Unit,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -150,7 +146,8 @@ fun MainScreen(
             }
             // Animating Box
             Aim(
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier
+                    .size(50.dp)
                     .align(Alignment.Center)
             )
 
@@ -175,7 +172,7 @@ fun MainScreen(
                             indication = null,
                             onClick = {
                                 onScanResult(code)
-
+                                viewModel.addQrHistory(code)
                             },
                         )
                 )
