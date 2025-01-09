@@ -15,5 +15,5 @@ interface QrHistoryRepository {
     ): List<QrHistory>
     suspend fun insertHistory(content: String): Long
     suspend fun deleteHistory(id: Long)
-    fun deleteAllHistory()
+    suspend fun deleteAllHistory()
 }

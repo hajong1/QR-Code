@@ -61,7 +61,7 @@ class QrHistoryRepositoryImpl @Inject constructor(
         qrHistoryDao.delete(id)
     }
 
-    override fun deleteAllHistory() {
-
+    override suspend fun deleteAllHistory() {
+        qrHistoryDao.deleteAllHistory()
     }
 }

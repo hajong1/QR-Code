@@ -119,6 +119,17 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
+    // 추후에 넣기
+    fun deleteAllHistory() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            repository.deleteAllHistory()
+
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
     companion object {
         private const val PageSize = 10
     }
