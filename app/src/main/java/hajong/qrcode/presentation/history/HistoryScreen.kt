@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -28,7 +29,7 @@ fun HistoryScreen(
     val scrollState = rememberLazyListState()
     val interactionSource = remember { MutableInteractionSource() }
 
-    val list = viewModel.historyList.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -47,13 +48,13 @@ fun HistoryScreen(
                 .fillMaxSize()
                 .padding(padding),
             state = scrollState,
-            loadMore = {
-                Log.d("[지용]", "call loadMore")
-            }
+            loadMore = { viewModel.loadMoreHistories() }
         ) {
-            items(
-                count = list.value.size,
-            ) {
+
+            itemsIndexed(
+                items = uiState.value.histories,
+
+            ) { index, item ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -62,19 +63,19 @@ fun HistoryScreen(
                 ) {
                     Column() {
                         Text(
-                            text = "id : ${list.value[it].id}",
+                            text = "id : ${item.id}",
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(bottom = 4.dp)
                         )
                         Text(
-                            text = "content : ${list.value[it].content}",
+                            text = "content : ${item.content}",
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(bottom = 4.dp)
                         )
                         Text(
-                            text = "time : ${list.value[it].timestamp}",
+                            text = "time : ${item.timestamp}",
                             modifier = Modifier
                                 .wrapContentSize()
                                 .padding(bottom = 4.dp)
@@ -87,11 +88,11 @@ fun HistoryScreen(
                             .align(Alignment.CenterVertically)
                             .size(24.dp)
                             .padding(4.dp)
-                            .clickable (
+                            .clickable(
                                 interactionSource = interactionSource,
                                 indication = null,
                                 onClick = {
-                                    viewModel.deleteHistory(list.value[it].id)
+                                    viewModel.deleteHistory(item.id)
                                 }
                             )
                     )
