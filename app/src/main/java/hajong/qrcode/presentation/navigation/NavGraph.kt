@@ -53,7 +53,14 @@ fun QRScannerNavGraph(navController: NavHostController) {
                     navController.popBackStack()
                 },
                 onItemClick = { url ->
-                    navController.navigate(Screen.Result.createRoute(url))
+                    navController.navigate(
+                        Screen.Result.createRoute(
+                            URLEncoder.encode(
+                                url,
+                                StandardCharsets.UTF_8.toString()
+                            )
+                        )
+                    )
                 }
             )
         }

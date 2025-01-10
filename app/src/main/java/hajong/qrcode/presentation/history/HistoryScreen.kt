@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import hajong.qrcode.presentation.common.History
 import hajong.qrcode.presentation.common.InfinityLazyColumn
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +40,18 @@ fun HistoryScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, "Back")
                     }
-                }
+                },
+//                actions = {
+//                    Text(
+//                        text = "전체삭제",
+//                        modifier = Modifier
+//                            .clickable (
+//                                interactionSource = interactionSource,
+//                                indication = null,
+//                                onClick = { viewModel.deleteAllHistory() }
+//                            )
+//                    )
+//                }
             )
         }
     ) { padding ->
@@ -53,50 +65,18 @@ fun HistoryScreen(
 
             itemsIndexed(
                 items = uiState.value.histories,
-
             ) { index, item ->
-                Row(
+                History(
+                    image = item.id.toString(),
+                    link = item.content,
+                    time = item.timestamp.toString(),
+                    onClick = { onItemClick(item.content) },
+                    onClickDelete = { viewModel.deleteHistory(item.id) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column() {
-                        Text(
-                            text = "id : ${item.id}",
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(bottom = 4.dp)
-                        )
-                        Text(
-                            text = "content : ${item.content}",
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(bottom = 4.dp)
-                        )
-                        Text(
-                            text = "time : ${item.timestamp}",
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(bottom = 4.dp)
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = "Delete",
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(24.dp)
-                            .padding(4.dp)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null,
-                                onClick = {
-                                    viewModel.deleteHistory(item.id)
-                                }
-                            )
-                    )
-                }
+                )
+                HorizontalDivider()
             }
         }
     }
