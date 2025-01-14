@@ -1,6 +1,7 @@
 package hajong.qrcode.presentation.history
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import hajong.qrcode.presentation.common.History
@@ -58,11 +60,12 @@ fun HistoryScreen(
         InfinityLazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFFEFF1F3))
                 .padding(padding),
+            contentPadding = PaddingValues(vertical = 12.dp),
             state = scrollState,
             loadMore = { viewModel.loadMoreHistories() }
         ) {
-
             itemsIndexed(
                 items = uiState.value.histories,
             ) { index, item ->
@@ -74,9 +77,8 @@ fun HistoryScreen(
                     onClickDelete = { viewModel.deleteHistory(item.id) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(vertical = 4.dp, horizontal = 16.dp),
                 )
-                HorizontalDivider()
             }
         }
     }

@@ -44,9 +44,10 @@ fun MainScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
-    val cameraProviderFuture = remember {
-        ProcessCameraProvider.getInstance(context)
-    }
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    var code by remember { mutableStateOf("") }
+    val qrCodeAnalyzer = remember { QrCodeAnalyzer() }
+    val interactionSource = remember { MutableInteractionSource() }
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -61,10 +62,7 @@ fun MainScreen(
             hasCameraPermission = granted
         }
     )
-    var code by remember { mutableStateOf("") }
-    val qrCodeAnalyzer = remember { QrCodeAnalyzer() }
 
-    val interactionSource = remember { MutableInteractionSource() }
     LaunchedEffect(key1 = true) {
         launcher.launch(Manifest.permission.CAMERA)
     }
@@ -73,7 +71,6 @@ fun MainScreen(
         qrCodeAnalyzer.scannedResult
             .distinctUntilChanged() // 동일한 값 방지
             .collect { result ->
-
                 when (parseQrResult(result)) {
                     is QrCodeResult.DeepLink -> {
                         code = result
@@ -85,9 +82,6 @@ fun MainScreen(
                         code = result
                     }
                 }
-
-
-//                onScanResult(result) // 콜백 호출
             }
     }
 
@@ -173,9 +167,7 @@ fun MainScreen(
                             indication = null,
                             onClick = {
                                 onScanResult(code)
-                                viewModel.addQrHistory(code).also {
-                                    Log.d("[지용]", "insertedId : $it")
-                                }
+                                viewModel.addQrHistory(code)
                             },
                         )
                 )
