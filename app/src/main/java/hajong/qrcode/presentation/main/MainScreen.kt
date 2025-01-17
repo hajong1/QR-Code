@@ -13,17 +13,26 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -76,7 +85,7 @@ fun MainScreen(
                         code = result
                     }
                     is QrCodeResult.PlainText -> {
-                        code = result
+                        code = "텍스트 : " + result
                     }
                     is QrCodeResult.Url -> {
                         code = result
@@ -92,99 +101,118 @@ fun MainScreen(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier.weight(1f),
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            // QR Scanner camera preview
-            if (hasCameraPermission) {
-                AndroidView(
-                    factory = { context ->
-                        val previewView = PreviewView(context)
-                        val preview = Preview.Builder().build()
-                        val selector = CameraSelector.Builder()
-                            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                            .build()
-                        preview.setSurfaceProvider(previewView.surfaceProvider)
-                        val imageAnalysis = ImageAnalysis.Builder()
-                            .setTargetResolution(
-                                Size(
-                                    previewView.width,
-                                    previewView.height
-                                )
-                            )
-                            .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-                            .build()
-                        imageAnalysis.setAnalyzer(
-                            ContextCompat.getMainExecutor(context),
-                            qrCodeAnalyzer
-                        )
-                        try {
-                            cameraProvider = cameraProviderFuture.get().also { provider ->
-                                provider.unbindAll()
-                                provider.bindToLifecycle(
-                                    lifecycleOwner,
-                                    selector,
-                                    preview,
-                                    imageAnalysis
-                                )
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                        previewView
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-            // Animating Box
-            Aim(
-                modifier = Modifier
-                    .size(50.dp)
-                    .align(Alignment.Center)
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .align(Alignment.BottomCenter),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier.weight(1f),
             ) {
-                Text(
-                    text = code,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                // QR Scanner camera preview
+                if (hasCameraPermission) {
+                    AndroidView(
+                        factory = { context ->
+                            val previewView = PreviewView(context)
+                            val preview = Preview.Builder().build()
+                            val selector = CameraSelector.Builder()
+                                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                                .build()
+                            preview.setSurfaceProvider(previewView.surfaceProvider)
+                            val imageAnalysis = ImageAnalysis.Builder()
+                                .setTargetResolution(
+                                    Size(
+                                        previewView.width,
+                                        previewView.height
+                                    )
+                                )
+                                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+                                .build()
+                            imageAnalysis.setAnalyzer(
+                                ContextCompat.getMainExecutor(context),
+                                qrCodeAnalyzer
+                            )
+                            try {
+                                cameraProvider = cameraProviderFuture.get().also { provider ->
+                                    provider.unbindAll()
+                                    provider.bindToLifecycle(
+                                        lifecycleOwner,
+                                        selector,
+                                        preview,
+                                        imageAnalysis
+                                    )
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                            previewView
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                // Animating Box
+                Aim(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.Center)
+                )
+
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(Color.Red)
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                            onClick = {
-                                onScanResult(code)
-                                viewModel.addQrHistory(code)
-                            },
+                        .padding(bottom = 16.dp)
+                        .height(240.dp)
+                        .align(Alignment.BottomCenter),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (code.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 40.dp, end = 40.dp, bottom = 16.dp)
+                                .border(1.dp, Color.White, RoundedCornerShape(40.dp))
+                                .shadow(16.dp, RoundedCornerShape(40.dp))
+                                .background(Color.White)
+                                .clickable(
+                                    interactionSource = interactionSource,
+                                    indication = null,
+                                    onClick = {
+                                        onScanResult(code)
+                                        viewModel.addQrHistory(code)
+                                    },
+                                )
+                        ) {
+                            Text(
+                                text = code,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp)
+                            )
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .shadow(16.dp, CircleShape)
+                            .background(Color.White, CircleShape)
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null,
+                                onClick = onHistoryClick
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.DateRange,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(20.dp)
                         )
-                )
-                Text(
-                    text = "Go History",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .background(Color.Gray)
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                            onClick = onHistoryClick,
-                        )
-                )
+                    }
+                }
             }
         }
     }
