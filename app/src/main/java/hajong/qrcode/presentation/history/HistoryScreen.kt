@@ -75,9 +75,7 @@ fun HistoryScreen(
                     time = item.timestamp.toString(),
                     onClick = { onItemClick(item.content) },
                     onClickDelete = { viewModel.deleteHistory(item.id) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp, horizontal = 16.dp),
+                    modifier = Modifier,
                 )
             }
         }

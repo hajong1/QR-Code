@@ -6,11 +6,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,8 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 
 @Composable
@@ -43,6 +47,8 @@ fun History(
 
     Row(
         modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 16.dp)
             .background(Color.White, RoundedCornerShape(12.dp))
             .padding(12.dp)
             .clickable (
@@ -65,33 +71,46 @@ fun History(
 //            contentScale = ContentScale.Crop,
 //            contentDescription = null,
 //        )
-        Column() {
+        Column(
+            modifier = Modifier
+                .weight(6f)
+        ) {
             Text(
                 text = link,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 16.sp,
                 modifier = Modifier
-                    .wrapContentSize()
                     .padding(bottom = 4.dp)
             )
             Text(
                 text = time,
+                fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(bottom = 4.dp)
             )
         }
-        Icon(
-            imageVector = Icons.Filled.Delete,
-            contentDescription = "Delete",
+        Box(
             modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(4.dp)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null,
-                    onClick = onClickDelete
-                )
-        )
+                .weight(1f)
+                .align(Alignment.CenterVertically),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "Delete",
+                modifier = Modifier
+                    .size(32.dp)
+                    .padding(4.dp)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = onClickDelete
+                    )
+            )
+        }
     }
 }
 
