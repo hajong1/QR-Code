@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.webkit.URLUtil
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.startActivity
 import java.net.URISyntaxException
 
 @Composable
@@ -36,12 +38,13 @@ fun QrWebView(
 //                        isLoading = false
                     }
 
-//                    override fun shouldOverrideUrlLoading(
-//                        view: WebView?,
-//                        request: WebResourceRequest?
-//                    ): Boolean {
-//                        return shouldOverrideUrlLoading(view, request!!.url.toString())
-//                    }
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?
+                    ): Boolean {
+                        Log.d("[지용]", "shouldOverrideUrlLoading")
+                        return handleUrl(context, request!!.url.toString())
+                    }
                 }
             }
         },
@@ -51,54 +54,55 @@ fun QrWebView(
     )
 }
 
-fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
-    url?.let {
-        if (!URLUtil.isNetworkUrl(url) && !URLUtil.isJavaScriptUrl(url)) {
-            val uri = try {
-                Uri.parse(url)
-            } catch (e: Exception) {
-                return false
-            }
-            return when (uri.scheme) {
-                "intent" -> {
-                    startSchemeIntent(it, view!!.context)
-                }
-                else -> {
-                    return try {
-                        // 다른 딥링크 스킴이면 실행
-
-                        true
-                    } catch (e: java.lang.Exception) {
-                        false
-                    }
-                }
-            }
-        } else {
+private fun handleUrl(context: Context, url: String): Boolean {
+    Log.d("[지용]", "shouldOverrideURLLoading : $url")
+    if (!URLUtil.isNetworkUrl(url) && !URLUtil.isJavaScriptUrl(url)) {
+        val uri = try {
+            Uri.parse(url)
+        } catch (e: Exception) {
             return false
         }
-    } ?: return false
+        return when (uri.scheme) {
+            "intent" -> {
+                Log.d("[지용]", "uri.scheme : intent")
+                startSchemeIntent(url, context)
+            }
+            else -> {
+                Log.d("[지용]", "uri.scheme : else")
+                return try {
+                    // 다른 딥링크 스킴이면 실행
+                    context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+                    true
+                } catch (e: java.lang.Exception) {
+                    false
+                }
+            }
+        }
+    } else {
+        return false
+    }
 }
 
 /*Intent 스킴을 처리하는 함수*/
-fun startSchemeIntent(url: String, context: Context): Boolean {
+private fun startSchemeIntent(url: String, context: Context): Boolean {
     val schemeIntent: Intent = try {
-        Intent.parseUri(url, Intent.URI_INTENT_SCHEME) // Intent 스킴을 파싱
+        Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
     } catch (e: URISyntaxException) {
         return false
     }
     try {
-//        startActivity(schemeIntent) // 앱으로 이동
+        context.startActivity(schemeIntent)
         return true
-    } catch (e: ActivityNotFoundException) { // 앱이 설치 안 되어 있는 경우
+    } catch (e: ActivityNotFoundException) {
         val packageName = schemeIntent.getPackage()
 
         if (!packageName.isNullOrBlank()) {
-//            startActivity(
-//                Intent(
-//                    Intent.ACTION_VIEW,
-//                    Uri.parse("market://details?id=$packageName") // 스토어로 이동
-//                )
-//            )
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=$packageName")
+                )
+            )
             return true
         }
     }
