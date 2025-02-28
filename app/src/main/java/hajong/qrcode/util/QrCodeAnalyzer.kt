@@ -12,15 +12,18 @@ import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.common.HybridBinarizer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
+import kotlin.system.measureTimeMillis
 
 class QrCodeAnalyzer: ImageAnalysis.Analyzer {
     private val _scannedResult = MutableSharedFlow<String>()
     val scannedResult = _scannedResult.asSharedFlow()
 
+    // 이미지 영역을 설정
     private val supportedImageFormats = listOf(
         ImageFormat.YUV_420_888,
         ImageFormat.YUV_422_888,
@@ -54,7 +57,7 @@ class QrCodeAnalyzer: ImageAnalysis.Analyzer {
                         )
                     }.decode(binaryBmp)
                     // QrCodeResult 를 여기에 붙일지 고민
-                    CoroutineScope(Dispatchers.Main).launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         _scannedResult.emit(result.text)
                     }
 

@@ -20,8 +20,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -85,7 +89,7 @@ fun MainScreen(
                         code = result
                     }
                     is QrCodeResult.PlainText -> {
-                        code = "텍스트 : " + result
+                        code = result
                     }
                     is QrCodeResult.Url -> {
                         code = result
@@ -161,16 +165,15 @@ fun MainScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp)
-                        .height(240.dp)
-                        .align(Alignment.BottomCenter),
-                    verticalArrangement = Arrangement.Bottom,
+                        .align(Alignment.BottomCenter)
+                        .padding(top = 4.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (code.isNotEmpty()) {
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .wrapContentSize()
                                 .padding(start = 40.dp, end = 40.dp, bottom = 16.dp)
                                 .border(1.dp, Color.White, RoundedCornerShape(40.dp))
                                 .shadow(16.dp, RoundedCornerShape(40.dp))
@@ -186,31 +189,79 @@ fun MainScreen(
                         ) {
                             Text(
                                 text = code,
-                                fontSize = 20.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp)
+                                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
                             )
                         }
                     }
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .wrapContentSize()
-                            .shadow(16.dp, CircleShape)
-                            .background(Color.White, CircleShape)
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null,
-                                onClick = onHistoryClick
-                            )
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .background(Color(0x80111111))
+                            .padding(vertical = 16.dp),
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.DateRange,
-                            contentDescription = null,
+                        Box(
                             modifier = Modifier
-                                .padding(20.dp)
-                        )
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterStart),
+                            ) {
+                                IconButton(
+                                    modifier = Modifier
+                                        .padding(20.dp),
+                                    onClick = onHistoryClick
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.List,
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                    )
+                                }
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .wrapContentSize()
+                                    .align(Alignment.Center)
+                                    .shadow(16.dp, CircleShape)
+                                    .background(Color.White, CircleShape)
+                                    .clickable(
+                                        enabled = code.isNotEmpty(),
+                                        interactionSource = interactionSource,
+                                        indication = null,
+                                        onClick = {
+                                            onScanResult(code)
+                                            viewModel.addQrHistory(code)
+                                        },
+                                    )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = if(code.isNotEmpty()) Color.Black else Color.Transparent,
+                                    modifier = Modifier
+                                        .padding(20.dp)
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterEnd)
+                            ) {
+                                // 여백 or 추가 기능 들어갈 row
+                            }
+                        }
                     }
                 }
             }

@@ -37,7 +37,7 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("내 기록") },
+                title = { Text("기록") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, "Back")
