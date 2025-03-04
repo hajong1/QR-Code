@@ -38,19 +38,5 @@ fun ResultScreen(
                 modifier = Modifier
             )
         }
-//        AndroidView(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(padding),
-//            factory = { context ->
-//                WebView(context).apply {
-//                    settings.javaScriptEnabled = true
-//                    webViewClient = WebViewClient()
-//                }
-//            },
-//            update = { webView ->
-//                webView.loadUrl(url)
-//            }
-//        )
     }
 }
