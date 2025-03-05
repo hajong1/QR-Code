@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464971785049",
+    "project_id": "qrcode-e0e3a",
+    "storage_bucket": "qrcode-e0e3a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464971785049:android:2f9db73dd9a0901b56e248",
+        "android_client_info": {
+          "package_name": "hajong.qrcode"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz3KOeGKAHv7FTyvC43FSFbds0KAKDIkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
